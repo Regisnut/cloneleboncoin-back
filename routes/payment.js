@@ -1,0 +1,51 @@
+const express = require('express');
+const router = express.Router();
+
+const Pay = require('../models/pay');
+const User = require('../models/user');
+const Offer = require('../models/offer');
+
+require('dotenv').config();
+// clé SECRETE API Stripe
+const stripe = require('stripe')('sk_test_p6CytBydiLA9PsD9Yhhb67ZQ00qhjcLHuU');
+//réception du token
+router.post('/payment', async (req, res) => {	try {
+		//envoi TOKEN a STRIPE
+		const { stripeToken, amount, title, productId } = req.fields;
+
+		const response = await stripe.charges.create({
+			amount: amount,
+			currency: 'eur',
+			description: `Paiement leboncoin pour : ${title}. ID du produit ${productId}`,
+			source: stripeToken
+		});
+
+		if (response.status === 'succeeded') {
+			//on prend id user
+
+			const token = req.fields.token;
+
+			const user = await User.findOne({ token });
+
+			const userId = user._id;
+			//le paiement est sauvé
+			const payment = await new Pay({
+				amount: amount,
+				offer: productId,
+				account: userId
+			});
+			await payment.save();
+			//on retire l'annonce payée
+			const offer = await Offer.findById(productId);
+			await offer.remove();
+			res.status(200).json({ message: 'success' });
+		} else {
+			res.json({ message: 'incident de paiement' });
+		}
+	} catch (error) {
+		console.log(error.message);
+		res.status(404).json({ error: error.message });
+	}
+});
+
+module.exports = router;
