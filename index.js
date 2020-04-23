@@ -10,6 +10,7 @@ require('dotenv').config();
 const formidableMiddleware = require("express-formidable")
 app.use(formidableMiddleware());
 
+//avec Heroku
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/leboncoin', {
 	useNewUrlParser: true,
 	useFindAndModify: false,
