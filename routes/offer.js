@@ -23,7 +23,14 @@ cloudinary.config({
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
 	try {
-		console.log(req.fields.title, req.fields.description, req.fields.price, req.files);
+		console.log(
+			req.fields.title,
+			req.fields.description,
+			req.fields.price,
+			req.files,
+			Object.keys(req.files).length,
+			req.files.files.path
+		);
 		if (req.files && Object.keys(req.files).length === 1) {
 			//1 image
 			await cloudinary.uploader.upload(
