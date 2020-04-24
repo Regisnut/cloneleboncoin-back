@@ -7,11 +7,11 @@ const cors = require('cors');
 app.use(cors());
 require('dotenv').config();
 
-const formidableMiddleware = require("express-formidable")
+const formidableMiddleware = require('express-formidable');
 app.use(formidableMiddleware());
 
 //avec Heroku
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost/leboncoin', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/leboncoin', {
 	useNewUrlParser: true,
 	useFindAndModify: false,
 	useCreateIndex: true
@@ -26,15 +26,11 @@ require('./models/offer');
 const userRoutes = require('./routes/user');
 app.use(userRoutes);
 
-
 const offersRoutes = require('./routes/offer');
 app.use(offersRoutes);
 
-
-const paymentRoutes = require("./routes/payment")
+const paymentRoutes = require('./routes/payment');
 app.use(paymentRoutes);
-
-
 
 app.all('*', (req, res) => {
 	res.status(404).send({ message: 'Page not found' });
