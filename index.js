@@ -42,6 +42,10 @@ app.all('*', (req, res) => {
 });
 
 //app listen
-app.listen(process.env.PORT || 3001, () => {
-	console.log('Yeah !! server has started');
-});
+app.listen(
+	process.env.PORT,
+	// || 3001
+	() => {
+		console.log('Yeah !! server has started');
+	}
+);
