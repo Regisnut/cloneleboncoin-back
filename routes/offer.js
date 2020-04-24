@@ -110,30 +110,29 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 					}
 				);
 			});
-		} else {
-			// no image
-			const obj = {
-				title: req.fields.title,
-				description: req.fields.description,
-				price: req.fields.price,
-				creator: req.user
-			};
-			const offer = new Offer(obj);
-			await offer.save();
-
-			res.status(200).json({
-				_id: offer._id,
-				title: offer.title,
-				description: offer.description,
-				price: offer.price,
-				picture: offer.picture,
-				created: offer.created,
-				creator: {
-					account: offer.creator.account,
-					_id: offer.creator._id
-				}
-			});
 		}
+		// no image
+		const obj = {
+			title: req.fields.title,
+			description: req.fields.description,
+			price: req.fields.price,
+			creator: req.user
+		};
+		const offer = new Offer(obj);
+		await offer.save();
+
+		res.status(200).json({
+			_id: offer._id,
+			title: offer.title,
+			description: offer.description,
+			price: offer.price,
+			picture: offer.picture,
+			created: offer.created,
+			creator: {
+				account: offer.creator.account,
+				_id: offer.creator._id
+			}
+		});
 	} catch (error) {
 		console.log(error.message);
 		res.status(404).json(error.message);

@@ -52,7 +52,7 @@ npm start
 
 # License contact
 
-License, Copyright © 2020 [LIEN GITHUB](https://github.com/regisnut).
+==License, Copyright © 2020== [LIEN GITHUB](https://github.com/regisnut).
 ---
 
 [![with-love](https://img.shields.io/badge/made%20with-%F0%9F%92%8C-red.svg)](https://github.com/regisnut/)
