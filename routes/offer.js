@@ -28,7 +28,8 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 		req.fields.price,
 		req.files,
 		Object.keys(req.files).length,
-		req.files.files.path
+		req.files,
+		req.files.files
 	);
 	try {
 		if (req.files && Object.keys(req.files).length === 1) {
