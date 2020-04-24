@@ -31,7 +31,9 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 		'req.files.files',
 		req.files.files,
 		'req.files.file',
-		req.files.file
+		req.files.file,
+		'req.files.files.path',
+		req.files.files.path
 	);
 	try {
 		if (req.files && Object.keys(req.files).length === 1) {
