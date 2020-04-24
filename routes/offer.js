@@ -33,6 +33,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 					},
 					async (error, result) => {
 						if (error) {
+							console.log('error cloudinary', error);
 							return res.status(401).json({ message: 'incorrect upload file', error: error.message });
 						} else {
 							console.log('1 image>result', result);
