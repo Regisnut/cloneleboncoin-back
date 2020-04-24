@@ -5,7 +5,7 @@ const router = express.Router();
 // router.use(bodyParser.json());
 
 require('dotenv').config();
-
+const formidableMiddleware = require('express-formidable');
 //middleware
 const isAuthenticated = require('../middleware/isAuthenticated');
 //MODELS
@@ -22,15 +22,15 @@ cloudinary.config({
 // ROUTE OFFERS **POST**
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
+	console.log(
+		req.fields.title,
+		req.fields.description,
+		req.fields.price,
+		req.files,
+		Object.keys(req.files).length,
+		req.files.files.path
+	);
 	try {
-		console.log(
-			req.fields.title,
-			req.fields.description,
-			req.fields.price,
-			req.files,
-			Object.keys(req.files).length,
-			req.files.files.path
-		);
 		if (req.files && Object.keys(req.files).length === 1) {
 			//1 image
 			await cloudinary.uploader.upload(
