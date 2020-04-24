@@ -28,12 +28,12 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 		req.fields.price,
 		req.files,
 		Object.keys(req.files).length,
-		req.files,
-		req.files.files
+		'req.files.files.path',
+		req.files.files.path
 	);
 	try {
 		if (req.files && Object.keys(req.files).length === 1) {
-			//1 image
+			console.log('1 image', Object.keys(req.files).length === 1);
 			await cloudinary.uploader.upload(
 				req.files.files.path,
 				{
@@ -43,6 +43,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 					if (error) {
 						return res.status(401).json({ message: 'incorrect upload file', error: error.message });
 					} else {
+						console.log('1 image>result', result);
 						const obj = {
 							title: req.fields.title,
 							description: req.fields.description,
@@ -52,8 +53,9 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 						};
 
 						const offer = new Offer(obj);
-						await offer.save();
 
+						await offer.save();
+						console.log('1 image>offer', offer);
 						res.json({
 							_id: offer._id,
 							title: offer.title,
