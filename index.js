@@ -11,11 +11,16 @@ const formidableMiddleware = require('express-formidable');
 app.use(formidableMiddleware());
 
 //avec Heroku
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/leboncoin', {
-	useNewUrlParser: true,
-	useFindAndModify: false,
-	useCreateIndex: true
-});
+mongoose.connect(
+	process.env.MONGODB_URI,
+	// ||
+	// 'mongodb://localhost/leboncoin'
+	{
+		useNewUrlParser: true,
+		useFindAndModify: false,
+		useCreateIndex: true
+	}
+);
 
 // ** MODELS
 require('./models/user');
