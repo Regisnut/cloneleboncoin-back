@@ -4,8 +4,6 @@ const router = express.Router();
 // const bodyParser = require('body-parser');
 // router.use(bodyParser.json());
 
-
-
 require('dotenv').config();
 
 //middleware
@@ -18,116 +16,117 @@ const cloudinary = require('cloudinary').v2;
 cloudinary.config({
 	cloud_name: process.env.CLOUD_NAME,
 	api_key: process.env.CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
-
+	api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // ROUTE OFFERS **POST**
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
 	try {
-console.log(req.fields.title, req.fields.description, req.fields.description, req.fields.price, req.user)
-		if (req.files && Object.keys(req.files).length === 1 ) {
+		console.log(req.fields.title, req.fields.description, req.fields.price, req.files);
+		if (req.files && Object.keys(req.files).length === 1) {
 			//1 image
-			await cloudinary.uploader.upload(req.files.files.path,    {
-				folder: "leboncoin-api"
-			  },async (error, result) => {
-				if (error) {
-					return res.status(401).json({ message: 'incorrect upload file', error: error.message });
-				} else {
-					
-					const obj = {
-						title: req.fields.title,
-						description: req.fields.description,
-						price: req.fields.price,
-						picture: result,
-						creator: req.user
-					};
-					
-					const offer = new Offer(obj);
-					await offer.save();
-				
-					res.json({
-						_id: offer._id,
-						title: offer.title,
-						description: offer.description,
-						price: offer.price,
-						picture: offer.picture,
-						created: offer.created,
-						creator: {
-							account: offer.creator.account,
-							_id: offer.creator._id
+			await cloudinary.uploader.upload(
+				req.files.files.path,
+				{
+					folder: 'leboncoin-api'
+				},
+				async (error, result) => {
+					if (error) {
+						return res.status(401).json({ message: 'incorrect upload file', error: error.message });
+					} else {
+						const obj = {
+							title: req.fields.title,
+							description: req.fields.description,
+							price: req.fields.price,
+							picture: result,
+							creator: req.user
+						};
+
+						const offer = new Offer(obj);
+						await offer.save();
+
+						res.json({
+							_id: offer._id,
+							title: offer.title,
+							description: offer.description,
+							price: offer.price,
+							picture: offer.picture,
+							created: offer.created,
+							creator: {
+								account: offer.creator.account,
+								_id: offer.creator._id
+							}
+						});
+					}
+				}
+			);
+		} else if (req.files && Object.keys(req.files).length > 1) {
+			// plus q 1 image
+			let obj = {
+				title: req.fields.title,
+				description: req.fields.description,
+				price: req.fields.price,
+				pictures: [],
+				creator: req.user
+			};
+
+			const pictures = [];
+			const files = Object.keys(req.files.files);
+			const results = {};
+			files.forEach((fileKey) => {
+				cloudinary.uploader.upload(
+					req.files.files[fileKey].path,
+					{
+						folder: 'leboncoin-api'
+					},
+					async (error, result) => {
+						if (error) {
+							results[fileKey] = {
+								sucess: false,
+								error: error
+							};
+						} else {
+							results[fileKey] = {
+								success: true,
+								result: result
+							};
 						}
-					});
+						if (Object.keys(results).length === files.length) {
+							for (let i = 0; i < Object.keys(results).length; i++) {
+								pictures.push(results[i].result.secure_url);
+							}
+							obj.pictures = pictures;
+							const newOffer = await new Offer(obj);
+							await newOffer.save();
+						}
+					}
+				);
+			});
+		} else {
+			// no image
+			const obj = {
+				title: req.fields.title,
+				description: req.fields.description,
+				price: req.fields.price,
+				creator: req.user
+			};
+			const offer = new Offer(obj);
+			await offer.save();
+
+			res.status(200).json({
+				_id: offer._id,
+				title: offer.title,
+				description: offer.description,
+				price: offer.price,
+				picture: offer.picture,
+				created: offer.created,
+				creator: {
+					account: offer.creator.account,
+					_id: offer.creator._id
 				}
 			});
 		}
-else if (req.files && Object.keys(req.files).length > 1) {
-	// plus q 1 image
-    let obj = {
-		title: req.fields.title,
-		description: req.fields.description,
-		price: req.fields.price,
-		pictures: [],
-		creator: req.user
-	  };
-
-	  const pictures = [];
-	  const files = Object.keys(req.files.files);
-	  const results = {}
-	  files.forEach(fileKey=>{
-		cloudinary.uploader.upload(
-			req.files.files[fileKey].path,
-	  {
-		  folder : "leboncoin-api"
-	  },async (error, result)=>{
-		  if(error){
-			  results[fileKey]={
-				  sucess : false,
-				  error : error
-			  };
-		  }else{results[fileKey]={
-			  success : true,
-			  result : result
-		  }}
-		  if (Object.keys(results).length === files.length){
-			  for (let i =0;i<Object.keys(results).length;i++){
-				  pictures.push(results[i].result.secure_url)
-			  }
-			  obj.pictures = pictures;
-			  const newOffer = await new Offer(obj);
-			  await newOffer.save();
-		  }
-	  }
-		)
-	})
-} 
-
-else{
-	// no image
-		const obj = {
-			title: req.fields.title,
-			description: req.fields.description,
-			price: req.fields.price,
-			creator: req.user
-		};
-		const offer = new Offer(obj);
-		await offer.save();
-	
-		res.status(200).json({
-			_id: offer._id,
-			title: offer.title,
-			description: offer.description,
-			price: offer.price,
-			picture: offer.picture,
-			created: offer.created,
-			creator: {
-				account: offer.creator.account,
-				_id: offer.creator._id
-			}
-		});
-	}
-
 	} catch (error) {
 		console.log(error.message);
 		res.status(404).json(error.message);
