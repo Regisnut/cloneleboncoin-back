@@ -22,59 +22,50 @@ cloudinary.config({
 // ROUTE OFFERS **POST**
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
-	console.log(
-		req.fields.title,
-		req.fields.description,
-		req.fields.price,
-		req.files,
-		Object.keys(req.files).length,
-		'req.files.files',
-		req.files.files,
-		'req.files.file',
-		req.files.file,
-		'req.files.files.path',
-		req.files.files.path
-	);
 	try {
 		if (req.files && Object.keys(req.files).length === 1) {
 			console.log('1 image', Object.keys(req.files).length === 1);
-			await cloudinary.uploader.upload(
-				req.files.files.path,
-				{
-					folder: 'leboncoin-api'
-				},
-				async (error, result) => {
-					if (error) {
-						return res.status(401).json({ message: 'incorrect upload file', error: error.message });
-					} else {
-						console.log('1 image>result', result);
-						const obj = {
-							title: req.fields.title,
-							description: req.fields.description,
-							price: req.fields.price,
-							picture: result,
-							creator: req.user
-						};
+			try {
+				await cloudinary.uploader.upload(
+					req.files.files.path,
+					{
+						folder: 'leboncoin-api'
+					},
+					async (error, result) => {
+						if (error) {
+							return res.status(401).json({ message: 'incorrect upload file', error: error.message });
+						} else {
+							console.log('1 image>result', result);
+							const obj = {
+								title: req.fields.title,
+								description: req.fields.description,
+								price: req.fields.price,
+								picture: result,
+								creator: req.user
+							};
 
-						const offer = new Offer(obj);
+							const offer = new Offer(obj);
 
-						await offer.save();
-						console.log('1 image>offer', offer);
-						res.json({
-							_id: offer._id,
-							title: offer.title,
-							description: offer.description,
-							price: offer.price,
-							picture: offer.picture,
-							created: offer.created,
-							creator: {
-								account: offer.creator.account,
-								_id: offer.creator._id
-							}
-						});
+							await offer.save();
+							console.log('1 image>offer', offer);
+							res.json({
+								_id: offer._id,
+								title: offer.title,
+								description: offer.description,
+								price: offer.price,
+								picture: offer.picture,
+								created: offer.created,
+								creator: {
+									account: offer.creator.account,
+									_id: offer.creator._id
+								}
+							});
+						}
 					}
-				}
-			);
+				);
+			} catch (error) {
+				console.log(error.message);
+			}
 		} else if (req.files && Object.keys(req.files).length > 1) {
 			// plus q 1 image
 			let obj = {
