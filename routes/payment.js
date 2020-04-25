@@ -10,10 +10,11 @@ require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
 //réception du token
 router.post('/payment', async (req, res) => {
+	console.log('stripe env', process.env.STRIPE_API_SECRET);
 	try {
 		//envoi TOKEN a STRIPE
 		const { stripeToken, amount, title, productId } = req.fields;
-
+		console.log('req.fields, req.fields');
 		const response = await stripe.charges.create({
 			amount: amount,
 			currency: 'eur',
