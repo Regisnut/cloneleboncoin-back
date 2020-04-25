@@ -95,10 +95,10 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 
 				await cloudinary.uploader.upload(
 					files.path,
-					{
-						use_filename: true,
-						unique_filename: false
-					},
+					// {
+					// 	use_filename: true,
+					// 	unique_filename: false
+					// },
 					{
 						folder: 'leboncoin-api'
 					},
