@@ -30,6 +30,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 			created: new Date(),
 			creator: req.user
 		};
+		console.log('obj1', obj);
 		const files = req.files.files;
 
 		if (files) {
