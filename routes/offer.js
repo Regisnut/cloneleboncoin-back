@@ -30,7 +30,6 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 			title: req.fields.title,
 			description: req.fields.description,
 			price: req.fields.price,
-			picture: [],
 			created: new Date(),
 			creator: req.user
 		};
@@ -131,7 +130,6 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 				title: offer.title,
 				description: offer.description,
 				price: offer.price,
-				picture: offer.picture,
 				created: offer.created,
 				creator: {
 					account: offer.creator.account,
