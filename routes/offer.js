@@ -22,6 +22,8 @@ cloudinary.config({
 // ROUTE OFFERS **POST**
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
+	console.log(process.env.CLOUD_NAME, process.env.CLOUDINARY_API_KEY, process.env.CLOUDINARY_API_SECRET);
+	console.log('req.files', req.files);
 	try {
 		let obj = {
 			title: req.fields.title,
