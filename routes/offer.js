@@ -92,6 +92,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 				//1 picture
 				console.log('1 image');
 				console.log('files.path==>', files.path);
+
 				await cloudinary.uploader.upload(
 					files.path,
 					{
