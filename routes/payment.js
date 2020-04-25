@@ -28,8 +28,9 @@ router.post('/payment', async (req, res) => {
 			const token = req.fields.token;
 
 			const user = await User.findOne({ token: token });
-
+			console.log('user', user);
 			const userId = user._id;
+
 			//le paiement est sauvé
 			const payment = await new Pay({
 				amount: amount,
