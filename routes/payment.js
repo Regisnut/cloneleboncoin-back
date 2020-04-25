@@ -14,14 +14,14 @@ router.post('/payment', async (req, res) => {
 	try {
 		//envoi TOKEN a STRIPE
 		const { stripeToken, amount, title, productId } = req.fields;
-		console.log('req.fields, req.fields');
+		console.log('req.fields', req.fields);
 		const response = await stripe.charges.create({
 			amount: amount,
 			currency: 'eur',
 			description: `Paiement leboncoin pour : ${title}. ID du produit ${productId}`,
 			source: stripeToken
 		});
-
+		console.log('response', response);
 		if (response.status === 'succeeded') {
 			//on prend id user
 
