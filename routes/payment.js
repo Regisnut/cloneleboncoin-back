@@ -24,10 +24,10 @@ router.post('/payment', async (req, res) => {
 		console.log('response', response);
 		if (response.status === 'succeeded') {
 			//on prend id user
-
+			console.log('req.fields.token', req.fields.token);
 			const token = req.fields.token;
 
-			const user = await User.findOne({ token });
+			const user = await User.findOne({ token: token });
 
 			const userId = user._id;
 			//le paiement est sauvé
