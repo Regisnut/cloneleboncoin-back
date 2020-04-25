@@ -23,8 +23,8 @@ router.post('/payment', async (req, res) => {
 		console.log('response', response);
 		if (response.status === 'succeeded') {
 			//on prend id user
-
-			const token = req.fields.token.token;
+			console.log('req.fields.token', req.fields.token);
+			const token = req.fields.token;
 
 			const user = await User.findOne({ token: token });
 			console.log('user', user);
