@@ -23,115 +23,119 @@ cloudinary.config({
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
 	try {
-		if (req.files && Object.keys(req.files).length === 1) {
-			console.log('1 image', Object.keys(req.files).length === 1);
-			try {
+		let obj = {
+			title: req.fields.title,
+			description: req.fields.description,
+			price: req.fields.price,
+			picture: [],
+			created: new Date(),
+			creator: req.user
+		};
+		const files = req.files.files;
+
+		if (files) {
+			if (files.length > 1) {
+				//more than 1 pic
+				const pictures = [];
+				const files = Object.keys(req.files.files);
+				const results = {};
+				files.forEach((fileKey) => {
+					cloudinary.uploader.upload(
+						req.files.files[fileKey].path,
+						{
+							folder: 'leboncoin-api'
+						},
+						async (error, result) => {
+							if (error) {
+								results[fileKey] = {
+									success: false,
+									error: error
+								};
+							} else {
+								results[fileKey] = {
+									success: true,
+									result: result
+								};
+							}
+							if (Object.keys(results).length === files.length) {
+								for (let i = 0; i < Object.keys(results).length; i++) {
+									pictures.push(results[i].result.secure_url);
+								}
+								obj.picture = pictures;
+								const newOffer = await new Offer(obj);
+								await newOffer.save();
+								res.json({
+									_id: newOffer._id,
+									title: newOffer.title,
+									description: newOffer.description,
+									price: newOffer.price,
+									picture: newOffer.picture,
+									created: newOffer.created,
+									creator: {
+										account: newOffer.creator.account,
+										_id: newOffer.creator._id
+									}
+								});
+							}
+						}
+					);
+				});
+			} else {
+				//1 picture
+				console.log('1 image');
 				await cloudinary.uploader.upload(
-					req.files.files.path,
+					files.path,
+					{
+						use_filename: true,
+						unique_filename: false
+					},
 					{
 						folder: 'leboncoin-api'
 					},
 					async (error, result) => {
 						if (error) {
-							console.log('error cloudinary', error);
 							return res.status(401).json({ message: 'incorrect upload file', error: error.message });
 						} else {
-							console.log('1 image>result', result);
-							const obj = {
-								title: req.fields.title,
-								description: req.fields.description,
-								price: req.fields.price,
-								picture: result,
-								creator: req.user
-							};
+							console.log('1 image result', result);
 
-							const offer = new Offer(obj);
+							obj.picture = result;
 
-							await offer.save();
-							console.log('1 image>offer', offer);
+							const newOffer = new Offer(obj);
+							await newOffer.save();
+							console.log('1 image>offer', newOffer);
 							res.json({
-								_id: offer._id,
-								title: offer.title,
-								description: offer.description,
-								price: offer.price,
-								picture: offer.picture,
-								created: offer.created,
+								_id: newOffer._id,
+								title: newOffer.title,
+								description: newOffer.description,
+								price: newOffer.price,
+								picture: newOffer.picture,
+								created: newOffer.created,
 								creator: {
-									account: offer.creator.account,
-									_id: offer.creator._id
+									account: newOffer.creator.account,
+									_id: newOffer.creator._id
 								}
 							});
 						}
 					}
 				);
-			} catch (error) {
-				console.log(error.message);
 			}
-		} else if (req.files && Object.keys(req.files).length > 1) {
-			// plus q 1 image
-			let obj = {
-				title: req.fields.title,
-				description: req.fields.description,
-				price: req.fields.price,
-				pictures: [],
-				creator: req.user
-			};
-
-			const pictures = [];
-			const files = Object.keys(req.files.files);
-			const results = {};
-			files.forEach((fileKey) => {
-				cloudinary.uploader.upload(
-					req.files.files[fileKey].path,
-					{
-						folder: 'leboncoin-api'
-					},
-					async (error, result) => {
-						if (error) {
-							results[fileKey] = {
-								sucess: false,
-								error: error
-							};
-						} else {
-							results[fileKey] = {
-								success: true,
-								result: result
-							};
-						}
-						if (Object.keys(results).length === files.length) {
-							for (let i = 0; i < Object.keys(results).length; i++) {
-								pictures.push(results[i].result.secure_url);
-							}
-							obj.pictures = pictures;
-							const newOffer = await new Offer(obj);
-							await newOffer.save();
-						}
-					}
-				);
+		} else {
+			// no image
+			const offer = new Offer(obj);
+			await offer.save();
+			res.status(200).json({
+				_id: offer._id,
+				title: offer.title,
+				description: offer.description,
+				price: offer.price,
+				picture: offer.picture,
+				created: offer.created,
+				creator: {
+					account: offer.creator.account,
+					_id: offer.creator._id
+				}
 			});
 		}
-		// no image
-		const obj = {
-			title: req.fields.title,
-			description: req.fields.description,
-			price: req.fields.price,
-			creator: req.user
-		};
-		const offer = new Offer(obj);
-		await offer.save();
-
-		res.status(200).json({
-			_id: offer._id,
-			title: offer.title,
-			description: offer.description,
-			price: offer.price,
-			picture: offer.picture,
-			created: offer.created,
-			creator: {
-				account: offer.creator.account,
-				_id: offer.creator._id
-			}
-		});
 	} catch (error) {
 		console.log(error.message);
 		res.status(404).json(error.message);
