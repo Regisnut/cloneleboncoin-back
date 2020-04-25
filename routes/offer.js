@@ -23,6 +23,8 @@ cloudinary.config({
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
 	try {
+		console.log('req.files', req.files);
+
 		let obj = {
 			title: req.fields.title,
 			description: req.fields.description,
@@ -30,6 +32,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 			created: new Date(),
 			creator: req.user
 		};
+		console.log('obj', obj);
 
 		const files = req.files.files;
 
