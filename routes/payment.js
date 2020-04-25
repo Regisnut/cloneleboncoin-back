@@ -27,8 +27,7 @@ router.post('/payment', async (req, res) => {
 			console.log('req.fields.token', req.fields.token);
 			console.log('req.fields.token.token', req.fields.token.token);
 
-			console.log('req.user', req.user);
-			const token = req.fields.token;
+			const token = req.fields.token.token;
 
 			const user = await User.findOne({ token: token });
 			console.log('user', user);
