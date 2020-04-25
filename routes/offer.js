@@ -14,12 +14,9 @@ const Offer = require('../models/offer');
 //import setup cloudinary
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
-	// cloud_name: process.env.CLOUD_NAME,
-	// api_key: process.env.CLOUDINARY_API_KEY,
-	// api_secret: process.env.CLOUDINARY_API_SECRET
-	cloud_name: 'ddi9zvjba',
-	api_key: '721698235614964',
-	api_secret: 't0KSuMx6aAHh0DoYew47RUSI1g0'
+	cloud_name: process.env.CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // ROUTE OFFERS **POST**
@@ -36,6 +33,14 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 		const files = req.files.files;
 
 		if (files) {
+			let obj = {
+				title: req.fields.title,
+				description: req.fields.description,
+				price: req.fields.price,
+				picture: [],
+				created: new Date(),
+				creator: req.user
+			};
 			if (files.length > 1) {
 				//more than 1 pic
 				const pictures = [];
