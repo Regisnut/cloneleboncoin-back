@@ -14,9 +14,12 @@ const Offer = require('../models/offer');
 //import setup cloudinary
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
-	cloud_name: process.env.CLOUD_NAME,
-	api_key: process.env.CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_API_SECRET
+	// cloud_name: process.env.CLOUD_NAME,
+	// api_key: process.env.CLOUDINARY_API_KEY,
+	// api_secret: process.env.CLOUDINARY_API_SECRET
+	cloud_name: 'ddi9zvjba',
+	api_key: '721698235614964',
+	api_secret: 't0KSuMx6aAHh0DoYew47RUSI1g0'
 });
 
 // ROUTE OFFERS **POST**
