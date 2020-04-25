@@ -93,7 +93,8 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 				console.log('1 image');
 				console.log('files.path==>', files.path);
 				await cloudinary.uploader.upload(
-					files.path,
+					// files.path,
+					'https://unsplash.com/photos/uZmr0wwfHNA',
 					{
 						use_filename: true,
 						unique_filename: false
