@@ -90,6 +90,8 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 				});
 			} else {
 				//1 picture
+				console.log('1 pic');
+				console.log('files', files.path);
 				await cloudinary.uploader.upload(
 					files.path,
 					{
@@ -97,8 +99,10 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 					},
 					async (error, result) => {
 						if (error) {
+							console.log('error', error);
 							return res.status(401).json({ message: 'incorrect upload file', error: error.message });
 						} else {
+							console.log('result cloudinary', result);
 							obj.picture = result;
 
 							const newOffer = new Offer(obj);

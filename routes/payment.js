@@ -10,7 +10,6 @@ require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
 //réception du token
 router.post('/payment', async (req, res) => {
-	console.log('stripe env', process.env.STRIPE_API_SECRET);
 	try {
 		//envoi TOKEN a STRIPE
 		const { stripeToken, amount, title, productId } = req.fields;
@@ -24,8 +23,6 @@ router.post('/payment', async (req, res) => {
 		console.log('response', response);
 		if (response.status === 'succeeded') {
 			//on prend id user
-			console.log('req.fields.token', req.fields.token);
-			console.log('req.fields.token.token', req.fields.token.token);
 
 			const token = req.fields.token.token;
 
