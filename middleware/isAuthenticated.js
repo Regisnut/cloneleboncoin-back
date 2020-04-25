@@ -18,7 +18,7 @@ const isAuthenticate = async (req, res, next) => {
 			} else {
 				req.user = user; // la requête req va avoir une clé supplémentaire appelée "user" qui aura toutes les infos de user ()
 				console.log('req.user', req.user);
-				next();
+				return next();
 			}
 		} else {
 			// je n'ai pas entré de token dans le post
