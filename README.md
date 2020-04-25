@@ -1,4 +1,4 @@
-<h2 align="center">LEBONCOIN PROJET API<strong>EXPRESS/NODE</strong></h2>
+<h2 align="center">LEBONCOIN PROJET API EXPRESS/NODE</></h2>
 
 
 ## Overview
@@ -52,7 +52,8 @@ npm start
 
 # License contact
 
-==License, Copyright © 2020== [LIEN GITHUB](https://github.com/regisnut).
+==License, Copyright © 2020==
+[Mon Github](https://github.com/regisnut).
 ---
 
 [![with-love](https://img.shields.io/badge/made%20with-%F0%9F%92%8C-red.svg)](https://github.com/regisnut/)

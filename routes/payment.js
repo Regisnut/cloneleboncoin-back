@@ -7,9 +7,10 @@ const Offer = require('../models/offer');
 
 require('dotenv').config();
 // clé SECRETE API Stripe
-const stripe = require('stripe')('sk_test_p6CytBydiLA9PsD9Yhhb67ZQ00qhjcLHuU');
+const stripe = require('stripe')(process.env.STRIPE_API_SECRET);
 //réception du token
-router.post('/payment', async (req, res) => {	try {
+router.post('/payment', async (req, res) => {
+	try {
 		//envoi TOKEN a STRIPE
 		const { stripeToken, amount, title, productId } = req.fields;
 

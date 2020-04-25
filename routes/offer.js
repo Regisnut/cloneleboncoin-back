@@ -22,8 +22,6 @@ cloudinary.config({
 // ROUTE OFFERS **POST**
 //utilisation de express-formidable pour utiliser le req.files
 router.post('/offer/publish', isAuthenticated, async (req, res) => {
-	console.log(process.env.CLOUD_NAME, process.env.CLOUDINARY_API_KEY, process.env.CLOUDINARY_API_SECRET);
-	console.log('req.files', req.files);
 	try {
 		let obj = {
 			title: req.fields.title,
@@ -92,15 +90,12 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 				});
 			} else {
 				//1 picture
-				console.log('1 image');
-				console.log('files.path==>', files.path);
-
 				await cloudinary.uploader.upload(
 					files.path,
-					// {
-					// 	use_filename: true,
-					// 	unique_filename: false
-					// },
+					{
+						use_filename: true,
+						unique_filename: false
+					},
 					{
 						folder: 'leboncoin-api'
 					},
@@ -108,8 +103,6 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 						if (error) {
 							return res.status(401).json({ message: 'incorrect upload file', error: error.message });
 						} else {
-							console.log('1 image result', result);
-
 							obj.picture = result;
 
 							const newOffer = new Offer(obj);
