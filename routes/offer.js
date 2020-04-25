@@ -30,7 +30,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 			created: new Date(),
 			creator: req.user
 		};
-		console.log('obj1', obj);
+
 		const files = req.files.files;
 
 		if (files) {
@@ -91,6 +91,7 @@ router.post('/offer/publish', isAuthenticated, async (req, res) => {
 			} else {
 				//1 picture
 				console.log('1 image');
+				console.log('files.path==>', files.path);
 				await cloudinary.uploader.upload(
 					files.path,
 					{
